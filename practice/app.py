@@ -4,7 +4,7 @@ import base64
 import os
 
 # 1. 페이지 설정
-st.set_page_config(layout="wide", page_title="Osaka Dream Hub", initial_sidebar_state="collapsed")
+st.set_page_config(layout="wide", page_title="Build Your Osaka", initial_sidebar_state="collapsed")
 
 # 2. 로컬 사진 파일을 HTML에 넣을 수 있도록 Base64로 변환하는 함수
 def get_base64_image(image_path):
