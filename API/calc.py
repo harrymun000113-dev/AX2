@@ -4,7 +4,7 @@ import streamlit as st
 import pandas as pd
 from dotenv import load_dotenv, find_dotenv
 
-# 1. 페이지 설정 (가장 먼저 실행되어야 함)
+# 1. 페이지 설정부터 (가장 먼저 실행되어야 함)
 st.set_page_config(
     page_title="Victorian Cabinet Hub",
     page_icon="🕰️",
