@@ -249,3 +249,4 @@ with chat_col:
         st.session_state.messages.append({"role": "assistant", "content": bot_response})
         with st.chat_message("assistant"):
             st.markdown(bot_response)
+            # sf
