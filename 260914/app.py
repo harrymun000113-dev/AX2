@@ -8,25 +8,22 @@ from dotenv import load_dotenv
 # --- 페이지 기본 설정 ---
 st.set_page_config(page_title="한국 여행 헬퍼", page_icon="🧳", layout="wide")
 
-# --- 커스텀 CSS (생략: 기존 코드와 동일) ---
-# ... 
+# --- 커스텀 CSS (트렌디한 UI) ---
+st.markdown("""
+<style>
+    .block-container { max-width: 1400px; padding-top: 2rem; }
+    div[data-testid="stSidebar"] { background-color: #F8F9FA; border-right: 1px solid #E9ECEF; }
+    .place-card { background-color: white; border-radius: 10px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid #F1F3F5; }
+    .place-title { font-size: 16px; font-weight: bold; color: #343A40; margin-bottom: 5px; }
+    .place-addr { font-size: 12px; color: #868E96; margin-bottom: 10px; }
+</style>
+""", unsafe_allow_html=True)
 
-# --- 환경변수 로드 (로컬 + 클라우드 호환) ---
+# --- 환경변수 로드 ---
 load_dotenv()
-
-def get_secret(key_name):
-    # 1. 클라우드 Secrets에서 먼저 확인
-    if key_name in st.secrets:
-        return st.secrets[key_name]
-    # 2. 로컬 .env에서 확인
-    return os.getenv(key_name, "")
-
-KAKAO_JS_KEY = get_secret("KAKAO_JS_KEY")
-KAKAO_REST_KEY = get_secret("KAKAO_REST_KEY")
-OPENWEATHER_KEY = get_secret("OPENWEATHER_API_KEY")
-
-# --- 세션 상태 초기화 (이하 기존 코드와 동일) ---
-# ...
+KAKAO_JS_KEY = os.getenv("KAKAO_JS_KEY", "")
+KAKAO_REST_KEY = os.getenv("KAKAO_REST_KEY", "")
+OPENWEATHER_KEY = os.getenv("OPENWEATHER_API_KEY", "")
 
 # --- 세션 상태 초기화 (데이터 저장소) ---
 if "saved_places" not in st.session_state:
