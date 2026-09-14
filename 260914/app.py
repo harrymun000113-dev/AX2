@@ -5,10 +5,8 @@ import json
 import os
 from dotenv import load_dotenv
 
-# --- 페이지 기본 설정 ---
 st.set_page_config(page_title="한국 여행 헬퍼", page_icon="🧳", layout="wide")
 
-# --- 커스텀 CSS (트렌디한 UI) ---
 st.markdown("""
 <style>
     .block-container { max-width: 1400px; padding-top: 2rem; }
@@ -19,19 +17,22 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- 환경변수 로드 ---
 load_dotenv()
-KAKAO_JS_KEY = os.getenv("KAKAO_JS_KEY", "")
-KAKAO_REST_KEY = os.getenv("KAKAO_REST_KEY", "")
-OPENWEATHER_KEY = os.getenv("OPENWEATHER_API_KEY", "")
 
-# --- 세션 상태 초기화 (데이터 저장소) ---
+def get_secret(key_name):
+    if key_name in st.secrets:
+        return st.secrets[key_name]
+    return os.getenv(key_name, "")
+
+KAKAO_JS_KEY = get_secret("KAKAO_JS_KEY")
+KAKAO_REST_KEY = get_secret("KAKAO_REST_KEY")
+OPENWEATHER_KEY = get_secret("OPENWEATHER_API_KEY")
+
 if "saved_places" not in st.session_state:
     st.session_state.saved_places = []
 if "search_results" not in st.session_state:
     st.session_state.search_results = []
 
-# --- 카카오 로컬 API 검색 함수 ---
 def search_kakao_places(keyword):
     url = "https://dapi.kakao.com/v2/local/search/keyword.json"
     headers = {"Authorization": f"KakaoAK {KAKAO_REST_KEY}"}
@@ -44,9 +45,6 @@ def search_kakao_places(keyword):
         st.error(f"검색 중 오류 발생: {e}")
     return []
 
-# ==========================================
-# 1. 사이드바 (한국 여행 헬퍼 & 핀셋)
-# ==========================================
 with st.sidebar:
     st.title("🧳 한국 여행 헬퍼")
     
@@ -71,14 +69,8 @@ with st.sidebar:
                 st.session_state.saved_places.pop(idx)
                 st.rerun()
 
-# ==========================================
-# 2. 메인 화면 레이아웃 (지도 7 : 검색 3)
-# ==========================================
 col_map, col_search = st.columns([7, 3], gap="large")
 
-# ------------------------------------------
-# 3. 좌측 카카오 맵 렌더링
-# ------------------------------------------
 with col_map:
     st.markdown("### 🗺️ 지도 뷰")
     
@@ -108,21 +100,27 @@ with col_map:
         <html>
         <head>
             <meta charset="utf-8">
+            <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+            <meta name="referrer" content="unsafe-url">
             <style>
                 html, body {{ width: 100%; height: 100%; margin: 0; padding: 0; }}
-                /* 지도를 감싸는 div 자체에 테두리와 라운드 디자인 적용 */
-                #map {{ width: 100%; height: 600px; border: 1px solid #E9ECEF; border-radius: 12px; overflow: hidden; box-sizing: border-box; }}
+                #map {{ width: 100%; height: 600px; border: 1px solid #E9ECEF; border-radius: 12px; overflow: hidden; box-sizing: border-box; background-color: #f8f9fa; }}
                 .info-window {{ padding: 8px; font-size: 14px; font-family: 'Malgun Gothic', sans-serif; font-weight: bold; border-radius:8px; border:none; }}
             </style>
+            <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey={KAKAO_JS_KEY}&autoload=false"></script>
         </head>
         <body>
             <div id="map"></div>
             <script>
-                var script = document.createElement('script');
-                script.type = 'text/javascript';
-                script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey={KAKAO_JS_KEY}&autoload=false';
-                
-                script.onload = function() {{
+                window.onload = function() {{
+                    if (typeof kakao === 'undefined') {{
+                        document.getElementById('map').innerHTML = 
+                            "<div style='padding:20px; text-align:center; color:red; margin-top:50px;'>" +
+                            "<h3>🚨 카카오맵 로드 차단됨</h3>" +
+                            "<p>API 키 또는 카카오 도메인 설정을 다시 확인해주세요.</p></div>";
+                        return;
+                    }}
+                    
                     kakao.maps.load(function() {{
                         var mapContainer = document.getElementById('map'); 
                         var mapOption = {{
@@ -158,17 +156,12 @@ with col_map:
                         }}
                     }});
                 }};
-                document.head.appendChild(script);
             </script>
         </body>
         </html>
         """
-        # st.markdown 감싸기 제거하고 바로 렌더링
         components.html(html_code, height=620)
 
-# ------------------------------------------
-# 4. 우측 장소 검색 패널
-# ------------------------------------------
 with col_search:
     st.markdown("### 🔍 장소 검색")
     search_keyword = st.text_input("검색어 입력", placeholder="예: 해운대 맛집", label_visibility="collapsed")
