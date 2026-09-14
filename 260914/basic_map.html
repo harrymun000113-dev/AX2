@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_23363f137b2de4aa4547058d3f1a6860 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_23363f137b2de4aa4547058d3f1a6860" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_23363f137b2de4aa4547058d3f1a6860 = L.map(
+                "map_23363f137b2de4aa4547058d3f1a6860",
+                {
+                    center: [37.5665, 126.978],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 13,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_3431b4cbf5488d6308a1c071133f10e1 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_3431b4cbf5488d6308a1c071133f10e1.addTo(map_23363f137b2de4aa4547058d3f1a6860);
+        
+    
+            var marker_c62582b1c4038711bda5bb4b6c15368e = L.marker(
+                [37.579617, 126.977041],
+                {
+}
+            ).addTo(map_23363f137b2de4aa4547058d3f1a6860);
+        
+    
+        var popup_694609e05593d6df7dba56fc9718099e = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_917ade6325d88f00a8fa89741300dea6 = $(`<div id="html_917ade6325d88f00a8fa89741300dea6" style="width: 100.0%; height: 100.0%;">경복궁</div>`)[0];
+                popup_694609e05593d6df7dba56fc9718099e.setContent(html_917ade6325d88f00a8fa89741300dea6);
+            
+        
+
+        marker_c62582b1c4038711bda5bb4b6c15368e.bindPopup(popup_694609e05593d6df7dba56fc9718099e)
+        ;
+
+        
+    
+    
+            marker_c62582b1c4038711bda5bb4b6c15368e.bindTooltip(
+                `<div>
+                     경복궁
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_f5b6bcdab634157fbe7a375333dba52d = L.marker(
+                [37.551169, 126.988227],
+                {
+}
+            ).addTo(map_23363f137b2de4aa4547058d3f1a6860);
+        
+    
+        var popup_8fd06f19d5bce8ea5328a01656ac0a6f = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_69592fcef9af3fe5777e87f841ed3e40 = $(`<div id="html_69592fcef9af3fe5777e87f841ed3e40" style="width: 100.0%; height: 100.0%;">N서울타워</div>`)[0];
+                popup_8fd06f19d5bce8ea5328a01656ac0a6f.setContent(html_69592fcef9af3fe5777e87f841ed3e40);
+            
+        
+
+        marker_f5b6bcdab634157fbe7a375333dba52d.bindPopup(popup_8fd06f19d5bce8ea5328a01656ac0a6f)
+        ;
+
+        
+    
+    
+            marker_f5b6bcdab634157fbe7a375333dba52d.bindTooltip(
+                `<div>
+                     N서울타워
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_f27707ab37a425c7b52998840395e84c = L.marker(
+                [37.563576, 126.984603],
+                {
+}
+            ).addTo(map_23363f137b2de4aa4547058d3f1a6860);
+        
+    
+        var popup_b2c136f9275bf7024ce68e82de72aa0a = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_b3e92de0624fd861d1d70ced8caf2302 = $(`<div id="html_b3e92de0624fd861d1d70ced8caf2302" style="width: 100.0%; height: 100.0%;">명동거리</div>`)[0];
+                popup_b2c136f9275bf7024ce68e82de72aa0a.setContent(html_b3e92de0624fd861d1d70ced8caf2302);
+            
+        
+
+        marker_f27707ab37a425c7b52998840395e84c.bindPopup(popup_b2c136f9275bf7024ce68e82de72aa0a)
+        ;
+
+        
+    
+    
+            marker_f27707ab37a425c7b52998840395e84c.bindTooltip(
+                `<div>
+                     명동거리
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_3dcbe2c0751075435d88c9fac6d61f86 = L.marker(
+                [37.566524, 127.009223],
+                {
+}
+            ).addTo(map_23363f137b2de4aa4547058d3f1a6860);
+        
+    
+        var popup_cb994369067d06bbc1e520e951d348b8 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_75b3152947e4741646367861de7105d6 = $(`<div id="html_75b3152947e4741646367861de7105d6" style="width: 100.0%; height: 100.0%;">동대문디자인플라자 (DDP)</div>`)[0];
+                popup_cb994369067d06bbc1e520e951d348b8.setContent(html_75b3152947e4741646367861de7105d6);
+            
+        
+
+        marker_3dcbe2c0751075435d88c9fac6d61f86.bindPopup(popup_cb994369067d06bbc1e520e951d348b8)
+        ;
+
+        
+    
+    
+            marker_3dcbe2c0751075435d88c9fac6d61f86.bindTooltip(
+                `<div>
+                     동대문디자인플라자 (DDP)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+</script>
+</html>
