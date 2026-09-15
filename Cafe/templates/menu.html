@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu | Robot Cafe</title>
+    <!-- CACHE BUSTER ADDED HERE (?v=1) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="menu-body">
+
+    <nav class="top-menu cafe-nav" style="background: #EFEBE4;">
+        <div class="logo">OASIS CAFE</div>
+        <div class="links">
+            <a href="/" style="color: #4A3C31;">HOME</a>
+            <a href="/menu" class="active" style="color: #4A3C31; border-bottom: 2px solid #4A3C31;">MENU</a>
+        </div>
+    </nav>
+
+    <div class="menu-container">
+        <div class="section-header">
+            <h2>DRINKS & PASTRIES</h2>
+        </div>
+
+        {% for drink in drinks %}
+        <div class="drink-item">
+            <div class="drink-image-container">
+                <img src="{{ url_for('static', filename=drink.image) }}" alt="{{ drink.name }}">
+            </div>
+            <div class="drink-info">
+                <div class="title-divider">
+                    <h3>{{ drink.name }}</h3>
+                </div>
+                <p>{{ drink.desc }}</p>
+                <button class="add-to-cart-btn" onclick="addToCart('{{ drink.id }}', '{{ drink.name }}', {{ drink.price }})">
+                    ADD TO CART - ${{ "%.2f"|format(drink.price) }}
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Floating Cart Button -->
+    <div id="floating-cart" onclick="viewCart()">
+        🛒 <span id="cart-count" class="cart-count">0</span>
+    </div>
+
+    <script>
+        let cart = [];
+        function addToCart(id, name, price) {
+            cart.push({ id, name, price });
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+        function viewCart() {
+            if (cart.length === 0) { alert("Cart is empty."); return; }
+            let summary = "Your Order:\n", total = 0;
+            cart.forEach(item => { summary += `- ${item.name} ($${item.price.toFixed(2)})\n`; total += item.price; });
+            alert(summary + `\nTotal: $${total.toFixed(2)}\n\nA robot will process this shortly!`);
+        }
+    </script>
+</body>
+</html>
