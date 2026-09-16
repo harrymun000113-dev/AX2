@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommendation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Short+Stack&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Top Navigation Menu -->
+    <nav class="top-menu">
+        <a href="/">🥠 Fortune Cookie</a>
+        <a href="/book" class="active">📚 Book Rec</a>
+    </nav>
+
+    <div class="container">
+        <h1 id="title-text">Break the seal for a book!</h1>
+
+        <div id="book-stage">
+            
+            <!-- Sealed Book (SVG Illustration) -->
+            <div id="book-sealed" class="draggable-item">
+                <svg viewBox="0 0 200 260" width="200" height="260">
+                    <!-- Book Cover -->
+                    <rect x="20" y="10" width="160" height="240" rx="5" fill="#E8C37D" stroke="#000" stroke-width="5"/>
+                    <path d="M 30 10 V 250" stroke="#000" stroke-width="3" fill="none" opacity="0.3"/>
+                    <!-- Ribbon -->
+                    <rect x="20" y="110" width="160" height="40" fill="#D32F2F" stroke="#000" stroke-width="5"/>
+                    <!-- Wax Seal -->
+                    <circle cx="100" cy="130" r="25" fill="#B71C1C" stroke="#000" stroke-width="5"/>
+                    <!-- Wax Seal Design -->
+                    <path d="M 88 120 L 112 140 M 112 120 L 88 140" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <!-- Revealed Book (Hidden initially) -->
+            <div id="book-revealed" class="hidden">
+                <div class="book-card">
+                    <img id="b-cover" src="" alt="Book Cover">
+                    <div id="b-genre" class="genre-tag">Fetching...</div>
+                    <p id="b-desc" class="book-desc">Please wait while we find a great book for you...</p>
+                </div>
+            </div>
+
+        </div>
+
+        <button id="reset-btn" class="cartoon-btn hidden" onclick="resetBook()">Try Again 🔄</button>
+    </div>
+
+    <script>
+        const bookSealed = document.getElementById('book-sealed');
+        const bookRevealed = document.getElementById('book-revealed');
+        const resetBtn = document.getElementById('reset-btn');
+        const titleText = document.getElementById('title-text');
+        
+        const bCover = document.getElementById('b-cover');
+        const bGenre = document.getElementById('b-genre');
+        const bDesc = document.getElementById('b-desc');
+
+        let isDragging = false;
+        let shakeCount = 0;
+        let lastX = 0, lastY = 0;
+        let isBroken = false;
+        let autoResetTimer = null;
+        let currentBook = null;
+
+        // Fetch book early
+        fetchBook();
+
+        function fetchBook() {
+            fetch('/api/book')
+                .then(res => res.json())
+                .then(data => {
+                    currentBook = data;
+                })
+                .catch(() => {
+                    currentBook = {
+                        title: "Error",
+                        genre: "UNKNOWN",
+                        description: "Could not fetch a book at this time.",
+                        cover: ""
+                    };
+                });
+        }
+
+        // Mouse Drag & Shake Handling
+        bookSealed.addEventListener('mousedown', (e) => {
+            if (isBroken) return;
+            isDragging = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            bookSealed.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging || isBroken) return;
+
+            let deltaX = Math.abs(e.clientX - lastX);
+            let deltaY = Math.abs(e.clientY - lastY);
+
+            if (deltaX > 25 || deltaY > 25) {
+                shakeCount++;
+                triggerShakeAnimation();
+                lastX = e.clientX;
+                lastY = e.clientY;
+
+                if (shakeCount >= 6) {
+                    breakSeal();
+                }
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            bookSealed.style.cursor = 'grab';
+        });
+
+        function triggerShakeAnimation() {
+            bookSealed.classList.add('shaking');
+            setTimeout(() => bookSealed.classList.remove('shaking'), 200);
+        }
+
+        function breakSeal() {
+            isBroken = true;
+            isDragging = false;
+
+            bookSealed.classList.add('hidden');
+            bookRevealed.classList.remove('hidden');
+            resetBtn.classList.remove('hidden');
+            
+            if (currentBook) {
+                titleText.textContent = currentBook.title;
+                bCover.src = currentBook.cover;
+                bGenre.textContent = currentBook.genre;
+                bDesc.textContent = currentBook.description;
+            }
+
+            // Automatically refresh after 10 seconds
+            autoResetTimer = setTimeout(() => {
+                resetBook();
+            }, 10000);
+        }
+
+        function resetBook() {
+            if (autoResetTimer) clearTimeout(autoResetTimer);
+            
+            isBroken = false;
+            shakeCount = 0;
+            
+            bookRevealed.classList.add('hidden');
+            bookSealed.classList.remove('hidden');
+            resetBtn.classList.add('hidden');
+            titleText.textContent = "Break the seal for a book!";
+            
+            fetchBook(); // Prepare next book
+        }
+    </script>
+</body>
+</html>

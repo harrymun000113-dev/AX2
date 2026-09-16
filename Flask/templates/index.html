@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Fortune Cookie</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Cute Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Short+Stack&display=swap" rel="stylesheet">
+</head>
+<body><!-- Put this right after the <body> tag in index.html -->
+    <nav class="top-menu">
+        <a href="/" class="active">🥠 Fortune Cookie</a>
+        <a href="/book">📚 Book Rec</a>
+    </nav>
+    
+    <div class="container">
+        <h1 id="title-text">Try your daily fortune!</h1>
+
+        <!-- Interactive Fortune Cookie Container -->
+        <div id="cookie-stage">
+            
+            <!-- Whole Cookie (SVG Illustration) -->
+            <div id="cookie-whole" class="cookie">
+                <svg viewBox="0 0 200 160" width="220" height="180">
+                    <!-- Outer Shell -->
+                    <path d="M 30,120 C 20,40 100,20 170,120 C 120,150 80,150 30,120 Z" 
+                          fill="#E8C37D" stroke="#000" stroke-width="5" stroke-linejoin="round"/>
+                    <!-- Fold crease -->
+                    <path d="M 60,110 Q 100,60 140,110" 
+                          fill="none" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 40,115 Q 100,155 160,115" 
+                          fill="#D8B168" stroke="#000" stroke-width="5"/>
+                </svg>
+            </div>
+
+            <!-- Broken Cookie (Hidden initially) -->
+            <div id="cookie-broken" class="cookie hidden">
+                <svg viewBox="0 0 260 180" width="280" height="200">
+                    <!-- Left Piece -->
+                    <path d="M 20,110 C 10,40 70,20 100,70 L 80,120 Z" 
+                          fill="#E8C37D" stroke="#000" stroke-width="5" stroke-linejoin="round"/>
+                    <!-- Right Piece -->
+                    <path d="M 160,70 C 190,20 250,40 240,110 L 180,120 Z" 
+                          fill="#E8C37D" stroke="#000" stroke-width="5" stroke-linejoin="round"/>
+                    <!-- Small Crumbles -->
+                    <ellipse cx="120" cy="130" rx="6" ry="4" fill="#E8C37D" stroke="#000" stroke-width="3"/>
+                    <ellipse cx="140" cy="125" rx="8" ry="5" fill="#E8C37D" stroke="#000" stroke-width="3"/>
+                    <ellipse cx="130" cy="145" rx="7" ry="5" fill="#E8C37D" stroke="#000" stroke-width="3"/>
+                </svg>
+
+                <!-- Fortune Paper Slip -->
+                <div id="paper-slip" class="paper-slip">
+                    <p id="fortune-text">Fetching your fortune...</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Try Again Button -->
+        <button id="reset-btn" class="cartoon-btn hidden" onclick="resetCookie()">Try Again 🔄</button>
+    </div>
+
+    <script>
+        const cookieWhole = document.getElementById('cookie-whole');
+        const cookieBroken = document.getElementById('cookie-broken');
+        const fortuneText = document.getElementById('fortune-text');
+        const resetBtn = document.getElementById('reset-btn');
+        const titleText = document.getElementById('title-text');
+
+        let isDragging = false;
+        let shakeCount = 0;
+        let lastX = 0, lastY = 0;
+        let isBroken = false;
+        let autoResetTimer = null;
+
+        // Fetch fortune early so it's ready
+        let currentFortune = "";
+        fetchFortune();
+
+        function fetchFortune() {
+            fetch('/api/fortune')
+                .then(res => res.json())
+                .then(data => {
+                    currentFortune = data.advice;
+                })
+                .catch(() => {
+                    currentFortune = "Be happy and live fully!";
+                });
+        }
+
+        // Mouse Drag & Shake Handling
+        cookieWhole.addEventListener('mousedown', (e) => {
+            if (isBroken) return;
+            isDragging = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            cookieWhole.style.cursor = 'grabbing';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging || isBroken) return;
+
+            let deltaX = Math.abs(e.clientX - lastX);
+            let deltaY = Math.abs(e.clientY - lastY);
+
+            // Detect sharp mouse movement / shake threshold
+            if (deltaX > 25 || deltaY > 25) {
+                shakeCount++;
+                triggerShakeAnimation();
+
+                lastX = e.clientX;
+                lastY = e.clientY;
+
+                if (shakeCount >= 6) {
+                    breakCookie();
+                }
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            cookieWhole.style.cursor = 'grab';
+        });
+
+        function triggerShakeAnimation() {
+            cookieWhole.classList.add('shaking');
+            setTimeout(() => cookieWhole.classList.remove('shaking'), 200);
+        }
+
+        function breakCookie() {
+            isBroken = true;
+            isDragging = false;
+
+            cookieWhole.classList.add('hidden');
+            cookieBroken.classList.remove('hidden');
+            titleText.textContent = "Your Fortune:";
+            fortuneText.textContent = currentFortune;
+            resetBtn.classList.remove('hidden');
+
+            // Automatically refresh after 10 seconds
+            autoResetTimer = setTimeout(() => {
+                resetCookie();
+            }, 10000);
+        }
+
+        function resetCookie() {
+            if (autoResetTimer) clearTimeout(autoResetTimer);
+            
+            isBroken = false;
+            shakeCount = 0;
+            
+            cookieBroken.classList.add('hidden');
+            cookieWhole.classList.remove('hidden');
+            resetBtn.classList.add('hidden');
+            titleText.textContent = "Try your daily fortune!";
+            
+            fetchFortune(); // Prepare next fortune
+        }
+    </script>
+</body>
+</html>
